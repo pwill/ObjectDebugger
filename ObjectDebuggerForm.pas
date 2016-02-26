@@ -23,6 +23,7 @@ type
     fCopyright, fNull: string;
   public
     constructor Create (AOwner: TComponent); override;
+    destructor Destroy; override;
   published
     property OnTop: Boolean
       read fOnTop write fOnTop;
@@ -569,6 +570,12 @@ end;
 var
   Created: Boolean = False;
 
+destructor TCantObjectDebugger.Destroy;
+begin
+  Created := False;
+  inherited Destroy;
+end;
+
 constructor TCantObjectDebugger.Create (AOwner: TComponent);
 begin
   if Created then
@@ -693,6 +700,8 @@ begin
   for nComp := 0 to CurrForm.ComponentCount - 1 do
   begin
     Comp := CurrForm.Components [nComp];
+    if(Comp.ClassName = 'TCantObjectDebugger') then
+     Continue;
     cbComps.Items.AddObject (Format ('%s: %s',
       [Comp.Name, Comp.ClassName]), Comp);
   end;
